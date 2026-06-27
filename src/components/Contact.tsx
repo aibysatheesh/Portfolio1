@@ -43,7 +43,12 @@ export default function Contact() {
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (err) {
       console.error("Error inserting message:", err);
-      const errorMessage = err instanceof Error ? err.message : "Failed to send message. Please configure Supabase and try again.";
+      let errorMessage = "Failed to send message. Please configure Supabase and try again.";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      } else if (err && typeof err === "object" && "message" in err) {
+        errorMessage = String((err as Record<string, unknown>).message);
+      }
       setSubmitStatus({
         type: "error",
         message: errorMessage,
